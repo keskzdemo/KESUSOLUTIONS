@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- DATA ---
     const packageTypes = ["UID", "ID-PASS", "RIOT#", "QRCODE", "OPEN/ID"];
-    const games = ["VALORANT", "LOL_WILDRIFT", "DUNK_CITY_DYNASTY", "RACING_MASTER", "GENSHIN_IMPACT", "MINECRAFT", "DELTA_FORCE", "ROV"];
+    const games = ["VALORANT", "LOL_WILDRIFT", "DUNK_CITY_DYNASTY", "RACING_MASTER", "GENSHIN_IMPACT", "MINECRAFT", "DELTA_FORCE", "ROV", "PUBG_MOBILE"];
     
     const autoFillMap = {
         'คูปอง':      { type: 'OPEN/ID', game: 'ROV' },
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'เหรียญ':      { type: 'ID-PASS', game: 'MINECRAFT' },
         'VP':          { type: 'RIOT#',   game: 'VALORANT' },
         'แพ็คโชคดี':    { type: 'QRCODE',  game: 'RACING_MASTER' },
+        'UC':       { type: 'UID',     game: 'PUBG_MOBILE' },
         'DELTA':       { type: 'UID',     game: 'DELTA_FORCE' },
         'GEMS':        { type: 'UID',     game: 'RACING_MASTER' },
         'รายสัปดาห์':  { type: 'UID',     game: 'RACING_MASTER' },
