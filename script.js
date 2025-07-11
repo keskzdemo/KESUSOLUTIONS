@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentOrderListEl.innerHTML = orderItems.map(item => `
             <div class="order-item">
                 <span class="order-item-details">
-                    ${item.quantity}x <strong>${item.name}</strong> ${item.typeDetail} - ${item.price.toFixed(2)} บาท/หน่วย
+                    ${item.quantity}x <strong>${item.name}</strong> - ${item.price.toFixed(2)} บาท/หน่วย
                 </span>
                 <button class="remove-item-btn" data-id="${item.id}" title="ลบรายการนี้">${trashIcon}</button>
             </div>
