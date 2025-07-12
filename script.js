@@ -173,6 +173,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (orderItems.length === 0) {
                 itemTypeSelect.disabled = false;
                 gameSelect.disabled = false;
+
+		// Reset all customer input fields
+                uidInput.value = '';
+                serverInput.value = '';
+                idEmailInput.value = '';
+                passwordInput.value = '';
+                inGameNameInput.value = '';
+                loginMethodInput.value = '';
+                riotInput.value = '';
+                // -------------------------
             }
         }
     }
