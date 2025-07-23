@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- DATA ---
     const packageTypes = ["UID", "ID-PASS", "RIOT#", "QRCODE", "OPEN/ID"];
-    const games = ["VALORANT", "LOL_WILDRIFT", "DUNK_CITY_DYNASTY", "RACING_MASTER", "GENSHIN_IMPACT", "MINECRAFT", "DELTA_FORCE", "ROV", "PUBG_MOBILE"];
+    const games = ["VALORANT", "LOL_WILDRIFT", "DUNK_CITY_DYNASTY", "RACING_MASTER", "GENSHIN_IMPACT", "MINECRAFT", "DELTA_FORCE", "ROV"];
     
     const autoFillMap = {
         'คูปอง':      { type: 'OPEN/ID', game: 'ROV' },
@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'เหรียญ':      { type: 'ID-PASS', game: 'MINECRAFT' },
         'VP':          { type: 'RIOT#',   game: 'VALORANT' },
         'แพ็คโชคดี':    { type: 'QRCODE',  game: 'RACING_MASTER' },
-        'UC':       { type: 'UID',     game: 'PUBG_MOBILE' },
         'DELTA':       { type: 'UID',     game: 'DELTA_FORCE' },
         'GEMS':        { type: 'UID',     game: 'RACING_MASTER' },
         'รายสัปดาห์':  { type: 'UID',     game: 'RACING_MASTER' },
@@ -82,7 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- HANDLER FUNCTIONS ---
     function handleItemNameInput() {
-        if (orderItems.length > 0) return; // Only work if order is empty
+        // Removed the 'if (orderItems.length > 0) return;' condition
+        // This allows auto-fill to re-evaluate when item name changes,
+        // even if there were previous items that have been removed.
 
         const value = itemNameInput.value.trim().toUpperCase();
         let matchFound = false;
@@ -134,12 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         orderItems.push(newItem);
         renderOrderList();
-        updateCustomerInfoVisibility();
+        updateCustomerInfoVisibility(); // อัปเดตการแสดงผล
         updateSummaries();
         
-        if (orderItems.length === 1) {
-            handleItemNameInput(); 
-        }
+        // No need for this condition anymore as handleItemNameInput will always run on input
+        // if (orderItems.length === 1) {
+        //     handleItemNameInput(); 
+        // }
 
         itemNameInput.value = '';
         itemPriceInput.value = '';
@@ -151,38 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = event.target.closest('.remove-item-btn');
         if (button) {
             const itemId = parseInt(button.dataset.id);
-            
-            const removedItem = orderItems.find(item => item.id === itemId);
-    
             orderItems = orderItems.filter(item => item.id !== itemId);
-    
-            if (removedItem && removedItem.typeDetail === '(ID-PASS)') {
-                const hasMoreIdPass = orderItems.some(item => item.typeDetail === '(ID-PASS)');
-                if (!hasMoreIdPass) {
-                    idEmailInput.value = '';
-                    passwordInput.value = '';
-                    inGameNameInput.value = '';
-                    loginMethodInput.value = '';
-                }
-            }
-    
             renderOrderList();
-            updateCustomerInfoVisibility();
+            updateCustomerInfoVisibility(); // อัปเดตการแสดงผล
             updateSummaries();
-    
+
             if (orderItems.length === 0) {
                 itemTypeSelect.disabled = false;
                 gameSelect.disabled = false;
-
-		// Reset all customer input fields
-                uidInput.value = '';
-                serverInput.value = '';
-                idEmailInput.value = '';
-                passwordInput.value = '';
-                inGameNameInput.value = '';
-                loginMethodInput.value = '';
-                riotInput.value = '';
-                // -------------------------
+                // Re-evaluate auto-fill when all items are removed and user starts typing a new item name
+                handleItemNameInput(); 
             }
         }
     }
@@ -196,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentOrderListEl.innerHTML = orderItems.map(item => `
             <div class="order-item">
                 <span class="order-item-details">
-                    ${item.quantity}x <strong>${item.name}</strong> - ${item.price.toFixed(2)} บาท/หน่วย
+                    ${item.quantity}x <strong>${item.name}</strong> ${item.typeDetail} - ${item.price.toFixed(2)} บาท/หน่วย
                 </span>
                 <button class="remove-item-btn" data-id="${item.id}" title="ลบรายการนี้">${trashIcon}</button>
             </div>
@@ -238,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (hasCustomerInfo) {
                     let customerInfoBlock = [];
                     if (!uidFields.classList.contains('hidden') && uidInput.value) {
+                        // The label in HTML is "UID", but we'll use a more generic term if it's for ROV
                         const idLabel = gameSelect.value === 'ROV' ? 'Open ID' : 'UID';
                         customerInfoBlock.push(`${idLabel}: ${uidInput.value}`);
                         if (serverInput.value) customerInfoBlock.push(`Server: ${serverInput.value}`);
